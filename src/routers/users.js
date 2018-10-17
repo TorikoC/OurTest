@@ -29,4 +29,26 @@ router.post('/', async (ctx) => {
   ctx.body = result;
 });
 
+router.put('/', async (ctx) => {
+  const {
+    email,
+  } = ctx.state.user;
+  const {
+    result,
+  } = ctx.request.body;
+  if (!email) {
+    ctx.throw('authentication error');
+  }
+  const user = await User.findOne({ email });
+  if (user) {
+    if (user.testHistories) {
+      user.testHistories.push(result);
+    } else {
+      user.testHistories = [result];
+    }
+    user.save();
+    ctx.body = 'ok';
+  }
+});
+
 module.exports = router;

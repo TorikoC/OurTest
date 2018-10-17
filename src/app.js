@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('koa-bodyparser');
 const koaBody = require('koa-body');
 const cors = require('@koa/cors');
+const serve = require('koa-static');
+const path = require('path');
+const views = require('koa-views');
 
 const router = require('./routers');
 
@@ -14,18 +17,32 @@ mongoose.connect('mongodb://127.0.0.1:27017/ourtest', (err) => {
 
 const app = new Koa();
 
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    ctx.status = err.status || 500;
+    ctx.body = err.message;
+    ctx.app.emit('error', err, ctx);
+  }
+});
+app.on('error', (err, ctx) => {
+  ctx.throw(err);
+});
+
+app.use(views(path.join(__dirname, 'public'), {
+  map: {
+    html: 'pug',
+  },
+}));
+app.use(serve(path.join(__dirname, 'public')));
+app.use(koaBody({ multipart: true }));
 app.use(bodyParser({
   onerror(err, ctx) {
     ctx.throw('body parse error', 422);
   },
 }));
-app.use(koaBody({ multipart: true }));
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-app.use(async (ctx) => {
-  ctx.body = 'Hello World';
-});
-
-app.listen(3000);
+app.listen(3001);

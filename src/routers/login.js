@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-
 const router = new Router();
 
 router.post('/', async (ctx) => {
@@ -11,18 +10,27 @@ router.post('/', async (ctx) => {
     email,
     password,
   } = ctx.request.body;
-  console.log(email, password);
 
   const where = {
     email,
   };
+
   const user = await User.findOne(where);
-  console.log(user);
+
   if (user && user.password === password) {
-    const token = await jwt.sign({ username: 'hawl' }, '42');
-    ctx.body = { token };
+    const token = await jwt.sign({ username: user.username, email: user.email }, '42');
+    ctx.body = {
+      token,
+      user: {
+        username: user.username,
+        avatar: user.avatar,
+        email: user.email,
+        testHistories: user.testHistories.slice(0, 10),
+        comments: user.comments.slice(0, 10),
+      },
+    };
   } else {
-    ctx.body = 'error';
+    ctx.throw(401, 'incorrect email or password.');
   }
 });
 
