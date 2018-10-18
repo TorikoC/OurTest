@@ -20,4 +20,13 @@ router.post('/', async (ctx) => {
   ctx.body = result;
 });
 
+router.put('/:title', async (ctx) => {
+  const { body } = ctx.request;
+  const { title } = ctx.params;
+  const test = await Test.findOne({ title });
+  const newTest = Object.assign(test, body);
+  newTest.save();
+  ctx.body = newTest;
+});
+
 module.exports = router;
