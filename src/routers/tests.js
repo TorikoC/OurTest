@@ -3,10 +3,17 @@ const Test = require('../models/test');
 
 const router = new Router();
 
-router.get('/', async (ctx) => {
-  const results = await Test.find({});
+router.get('/', async(ctx) => {
+  const { username } = ctx.request.query;
+  const where = {}; 
+  if (username) {
+    where.author = username;
+  }
+  console.log(where);
+  const results = await Test.find(where);
   ctx.body = results;
-});
+})
+
 router.get('/:title', async (ctx) => {
   const { title } = ctx.params;
   const where = { title };

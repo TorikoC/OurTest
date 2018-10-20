@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  activities: {
+    type: Array,
+    default: [],
+  }
 });
 
 const User = mongoose.model('User', userSchema);
