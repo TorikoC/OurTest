@@ -6,6 +6,7 @@ const loginRouter = require('./login');
 const testRouter = require('./tests');
 const commentRouter = require('./comments');
 const mailRouter = require('./mail');
+const resultRouter = require('./results');
 
 const router = new Router();
 
@@ -19,6 +20,7 @@ router.use('/users', jwt({
 
 router.use('/tests', testRouter.routes(), testRouter.allowedMethods());
 router.use('/sendmail', mailRouter.routes(), mailRouter.allowedMethods());
+router.use('/results', resultRouter.routes(), resultRouter.allowedMethods());
 
 router.use('/comments', jwt({
   secret: '42',
