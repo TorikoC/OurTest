@@ -21,6 +21,7 @@ app.use(async (ctx, next) => {
   try {
     await next();
   } catch (err) {
+    console.log(err);
     ctx.status = err.status || 500;
     ctx.body = err.message;
     ctx.app.emit('error', err, ctx);
@@ -36,6 +37,7 @@ app.use(views(path.join(__dirname, 'public'), {
   },
 }));
 app.use(serve(path.join(__dirname, 'public')));
+app.use(serve(path.join(__dirname, 'static')));
 app.use(koaBody({ multipart: true }));
 app.use(bodyParser({
   onerror(err, ctx) {

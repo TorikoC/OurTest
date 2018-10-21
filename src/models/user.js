@@ -11,14 +11,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '/logo.png',
   },
+  bio: {
+    type: String,
+  },
   password: {
     type: String,
   },
   comments: {
-    type: Array,
-    default: [],
-  },
-  testHistories: {
     type: Array,
     default: [],
   },

@@ -31,6 +31,7 @@ router.post('/', async (ctx) => {
         username: user.username,
         avatar: user.avatar,
         email: user.email,
+        bio: user.bio,
         results: results.slice(0, 10),
         comments: user.comments.slice(0, 10),
         activities: user.activities.slice(0, 10),
