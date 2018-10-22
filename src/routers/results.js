@@ -22,9 +22,7 @@ router.get('/:id', async (ctx) => {
 
 router.post('/', async (ctx) => {
   const { body } = ctx.request;
-  console.log(body);
-  Result.create(body);
-  ctx.body = 'ok';
+  ctx.body = await Result.create(body);
 })
 
 module.exports = router;
