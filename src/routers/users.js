@@ -55,7 +55,11 @@ router.put('/', async (ctx) => {
       }
       return 'jpg';
     }
-    fs.unlinkSync(path.join(__dirname, '..', 'static/avatar/', user.avatar.split('/').pop()));
+    try {
+      fs.unlinkSync(path.join(__dirname, '..', 'static/avatar/', user.avatar.split('/').pop()));
+    } catch (err) {
+
+    }
     const rs = fs.createReadStream(avatar.path);
     const name = Date.now() + '.' + getType(avatar.type);
     const ws = fs.createWriteStream(path.join(__dirname, '..', 'static/avatar/', name));

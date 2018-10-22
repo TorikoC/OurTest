@@ -18,6 +18,9 @@ router.post('/', async (ctx) => {
   };
 
   const user = await User.findOne(where);
+  if (!user) {
+    ctx.throw('user not exist.');
+  } 
   const results = await Result.find({username: user.username});
   const comments = await Comment.find({username: user.username});
   if (user && user.password === password) {

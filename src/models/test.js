@@ -37,14 +37,15 @@ const testSchema = new mongoose.Schema({
   settings: {
     type: Object,
     default: {
-      // 1 public, 2 private
-      accessbility: 1,
-      // 1. all questions, 2. each question
-      timerMode: 1,
+      // 0 public, 1 private
+      accessbility: 0,
+      // 0. all questions, 1. each question
+      timerMode: 0,
+      // minutes
       timeLimit: 10,
-      // 1. always, 2. at specified time
-      openMode: 1,
-      openTime: 0,
+      // 0. always, 1. scheduled.
+      schedule: 0,
+      scheduleAt: 0,
       whitelist: [],
     }
   }

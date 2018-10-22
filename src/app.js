@@ -28,7 +28,7 @@ app.use(async (ctx, next) => {
   }
 });
 app.on('error', (err, ctx) => {
-  ctx.throw(err);
+  console.log('error logged.');
 });
 
 app.use(views(path.join(__dirname, 'public'), {
