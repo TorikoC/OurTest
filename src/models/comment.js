@@ -12,6 +12,9 @@ const commentSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Number,
+  },
+  avatar: {
+    type: String,
   }
 });
 

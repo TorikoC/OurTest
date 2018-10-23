@@ -27,7 +27,7 @@ router.post('/', async (ctx) => {
     Comment.create({
       title,
       username: user.username,
-      avatar: 'http://localhost:8081/logo.png',
+      avatar: user.avatar,
       content: comment,
       // TODO:
       // use createdAt from client
@@ -42,7 +42,7 @@ router.post('/', async (ctx) => {
     }
     if (test && test.comments) {
       test.comments.push({
-        avatar: 'http://localhost:8081/logo.png',
+        avatar: user.avatar,
         username,
         content: comment,
         dateTime: Date.now(),
