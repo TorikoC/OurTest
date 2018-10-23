@@ -7,12 +7,18 @@ const Comment = require('../models/comment');
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  const { username } = ctx.request.query;
+  let { username, page, limit } = ctx.request.query;
+
+  page = +page || 1;
+  limit = +limit || 20;
+
   const where = {
     username,
   }; 
-  const results = await Comment.find(where);
-  ctx.body = results;
+  const skip =  (page - 1) * limit;
+  const results = await Comment.find(where).skip(skip).limit(limit);
+  const total = await Comment.count(where);
+  ctx.body = { results, total };
 
 });
 

@@ -4,14 +4,18 @@ const Result = require('../models/result');
 const router = new Router();
 
 router.get('/', async(ctx) => {
-  const { username } = ctx.request.query;
+  let { username, page } = ctx.request.query;
+  page = +page || 1;
   const where = {
     username,
   }; 
-  const results = await Result.find(where);
-  ctx.body = results;
+  
+  const limit = 20;
+  const skip = (page - 1) * limit;
+  const results = await Result.find(where).skip(skip).limit(limit);
+  const total = await Result.count(where);
+  ctx.body = { total, results };
 })
-
 
 router.get('/:id', async (ctx) => {
   const { id } = ctx.params;
