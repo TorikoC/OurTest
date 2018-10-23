@@ -42,7 +42,10 @@ const testSchema = new mongoose.Schema({
       // 0. all questions, 1. each question
       timerMode: 0,
       // minutes
-      timeLimit: 10,
+      timeLimit: {
+        minutes: 0,
+        seconds: 10,
+      },
       // 0. always, 1. scheduled.
       schedule: 0,
       scheduleAt: 0,
