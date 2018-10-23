@@ -5,22 +5,30 @@ const jwt = require('koa-jwt');
 const router = new Router();
 
 router.get('/', async(ctx) => {
-  let { username, page } = ctx.request.query;
+  let { 
+    username, 
+    page,
+    limit,
+    keyword,
+  } = ctx.request.query;
+
   page = +page || 1;
+  limit = +limit || 20;
+  keyword = keyword || '';
 
   let where = {
     'settings.accessbility': 0,
+    title: {
+      $regex: keyword,
+    },
   }; 
   if (username) {
-    where = {
-      author: username,
-    }
+    where.author = username;
+    delete where['settings.accessbility'];
   }
-  const limit = 20;
   const skip = (page - 1) * 20;
   const results = await Test.find(where).skip(skip).limit(limit);
   const total = await Test.count(where);
-  console.log(total)
   ctx.body = { results, total };
 })
 

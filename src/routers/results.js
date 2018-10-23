@@ -4,13 +4,22 @@ const Result = require('../models/result');
 const router = new Router();
 
 router.get('/', async(ctx) => {
-  let { username, page } = ctx.request.query;
+  let { 
+    username, 
+    page,
+    limit,
+    keyword,
+  } = ctx.request.query;
   page = +page || 1;
+  limit = +limit || 20;
+  keyword = keyword || '';
   const where = {
     username,
+    title: {
+      $regex: keyword,
+    },
   }; 
   
-  const limit = 20;
   const skip = (page - 1) * limit;
   const results = await Result.find(where).skip(skip).limit(limit);
   const total = await Result.count(where);

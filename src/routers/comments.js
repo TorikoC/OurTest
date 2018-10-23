@@ -7,14 +7,30 @@ const Comment = require('../models/comment');
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  let { username, page, limit } = ctx.request.query;
+  let {
+    username, 
+    page, 
+    limit,
+    keyword,
+  } = ctx.request.query;
 
   page = +page || 1;
   limit = +limit || 20;
+  keyword = keyword || '';
 
   const where = {
     username,
+    $or: [{
+      title: {
+        $regex: keyword,
+      }
+    }, {
+      content: {
+        $regex: keyword,
+      },
+    }],
   }; 
+
   const skip =  (page - 1) * limit;
   const results = await Comment.find(where).skip(skip).limit(limit);
   const total = await Comment.count(where);
