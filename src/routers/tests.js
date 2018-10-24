@@ -15,12 +15,22 @@ router.get('/', async(ctx) => {
   page = +page || 1;
   limit = +limit || 20;
   keyword = keyword || '';
+  const tags = keyword.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
 
   let where = {
     'settings.accessbility': 0,
-    title: {
-      $regex: keyword,
-    },
+    $or: [
+      {
+        title: {
+          $regex: keyword,
+        },
+      },
+      {
+        tags: {
+          $all: tags
+        }
+      }
+    ]
   }; 
   if (username) {
     where.author = username;
@@ -62,6 +72,7 @@ router.get('/:title', jwt({
 
 router.post('/', async (ctx) => {
   const { body } = ctx.request;
+  body.tags = body.tags.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
   const result = await Test.create(body);
   ctx.body = result;
 });

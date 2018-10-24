@@ -18,8 +18,8 @@ const testSchema = new mongoose.Schema({
     default: 100,
   },
   tags: {
-    type: String,
-    default: '',
+    type: Array,
+    default: [],
   },
   timeLimit: {
     type: Number,
