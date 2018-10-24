@@ -36,11 +36,17 @@ router.get('/:title', jwt({
   secret: '42',
 }), async (ctx) => {
   const { title } = ctx.params;
+  const { email, username } = ctx.state.user;
   const where = { title };
   const result = await Test.findOne(where);
+  result.stars.forEach((obj) => {
+    if (obj.username === username) {
+      result.vote.disable = true;
+      result.vote.count = obj.count ;
+    }
+  })
   if (result.settings.accessbility) {
     try {
-      const { email, username } = ctx.state.user;
       if (!email || (result.settings.whitelist.indexOf(email) === -1 && result.author !== username)) {
         ctx.throw(new Error('this test is private, memebers only.'));
       } else {
@@ -68,5 +74,24 @@ router.put('/:title', async (ctx) => {
   test.save();
   ctx.body = test;
 });
+
+router.put('/stars/:title', jwt({
+  secret: '42',
+}), async (ctx) => {
+  const { count } = ctx.request.body;
+  const { title } = ctx.params;
+  const test = await Test.findOne({ title });
+  const { username } = ctx.state.user;
+
+  if (test) {
+    test.stars.push({
+      username,
+      count,
+    });
+  }
+
+  test.save();
+  ctx.body = test;
+})
 
 module.exports = router;

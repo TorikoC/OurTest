@@ -33,7 +33,17 @@ const testSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-
+  stars: {
+    type: Array,
+    default: [],
+  },
+  vote: {
+    type: Object,
+    default: {
+      disable: false,
+      count: 0,
+    }
+  },
   settings: {
     type: Object,
     default: {
