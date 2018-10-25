@@ -10,6 +10,18 @@ const resultSchema = new mongoose.Schema({
   details: {
     type: Array,
   },
+  scores: {
+    type: Number,
+    default: 0,
+  },
+  totalScores: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Number,
+    default: 0,
+  }
 });
 
 // TODO:

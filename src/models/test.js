@@ -13,9 +13,9 @@ const testSchema = new mongoose.Schema({
     type: String,
     default: 'admin(defalut author)',
   },
-  score: {
+  totalScores: {
     type: Number,
-    default: 100,
+    default: 0,
   },
   tags: {
     type: Array,
