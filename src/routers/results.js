@@ -40,7 +40,6 @@ router.get('/', async(ctx) => {
 router.get('/:id', async (ctx) => {
   const { id } = ctx.params;
   const result = await Result.findOne({_id: id});
-  console.log('get', result);
   ctx.body = result;
 })
 

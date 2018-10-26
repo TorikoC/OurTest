@@ -10,11 +10,11 @@ const resultSchema = new mongoose.Schema({
   details: {
     type: Array,
   },
-  scores: {
+  score: {
     type: Number,
     default: 0,
   },
-  totalScores: {
+  totalScore: {
     type: Number,
     default: 0,
   },

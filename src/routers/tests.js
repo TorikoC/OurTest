@@ -36,7 +36,7 @@ router.get('/', async(ctx) => {
     where.author = username;
     delete where['settings.accessbility'];
   }
-  const skip = (page - 1) * 20;
+  const skip = (page - 1) * limit;
   const results = await Test.find(where).skip(skip).limit(limit);
   const total = await Test.count(where);
   ctx.body = { results, total };
@@ -72,6 +72,7 @@ router.get('/:title', jwt({
 
 router.post('/', async (ctx) => {
   const { body } = ctx.request;
+  console.log(body);
   body.tags = body.tags.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
   const result = await Test.create(body);
   ctx.body = result;
@@ -103,6 +104,20 @@ router.put('/stars/:title', jwt({
 
   test.save();
   ctx.body = test;
+})
+
+router.del('/:title', jwt({
+  secret: '42',
+}), async (ctx) => {
+  const { title } = ctx.params;
+  const { username } = ctx.state.user;
+  const result = await Test.findOne({title});
+  console.log(result);
+  if (result && result.author === username) {
+    ctx.body = await Test.remove({title});
+  } else {
+    ctx.throw('Test not exist or user not authenticated.');
+  }
 })
 
 module.exports = router;
