@@ -10,11 +10,14 @@ router.get('/', async(ctx) => {
     page,
     limit,
     keyword,
+    category,
   } = ctx.request.query;
 
   page = +page || 1;
   limit = +limit || 20;
   keyword = keyword || '';
+  category = category || '';
+
   const tags = keyword.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
 
   let where = {
@@ -30,8 +33,14 @@ router.get('/', async(ctx) => {
           $all: tags
         }
       }
-    ]
+    ],
   }; 
+  if (category) {
+    category = category.split(',').filter((obj) => obj.trim() !== '');
+    where.category = {
+      $all: category,
+    }
+  }
   if (username) {
     where.author = username;
     delete where['settings.accessbility'];

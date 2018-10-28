@@ -17,13 +17,13 @@ const testSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  tags: {
+  category: {
     type: Array,
     default: [],
   },
-  timeLimit: {
-    type: Number,
-    default: 1000 * 10,
+  tags: {
+    type: Array,
+    default: [],
   },
   questions: {
     type: Array,

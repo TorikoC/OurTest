@@ -7,6 +7,8 @@ const testRouter = require('./tests');
 const commentRouter = require('./comments');
 const mailRouter = require('./mail');
 const resultRouter = require('./results');
+const tagsRouter = require('./tags');
+const categoryRouter = require('./category');
 
 const router = new Router();
 
@@ -21,6 +23,8 @@ router.use('/users', jwt({
 router.use('/tests', testRouter.routes(), testRouter.allowedMethods());
 router.use('/sendmail', mailRouter.routes(), mailRouter.allowedMethods());
 router.use('/results', resultRouter.routes(), resultRouter.allowedMethods());
+router.use('/tags', tagsRouter.routes(), tagsRouter.allowedMethods());
+router.use('/category', categoryRouter.routes(), categoryRouter.allowedMethods());
 
 router.use('/comments', jwt({
   secret: '42',
