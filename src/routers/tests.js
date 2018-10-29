@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const Test = require('../models/test');
 const jwt = require('koa-jwt');
+const getRating = require('../tools/getRating');
 
 const router = new Router();
 
@@ -57,7 +58,11 @@ router.get('/:title', jwt({
   const { title } = ctx.params;
   const { email, username } = ctx.state.user;
   const where = { title };
-  const result = await Test.findOne(where);
+  const result = await Test.findOne(where).lean();
+
+  result.rating = getRating(result.stars);
+  console.log(result.rating);
+
   result.stars.forEach((obj) => {
     if (obj.username === username) {
       result.vote.disable = true;
