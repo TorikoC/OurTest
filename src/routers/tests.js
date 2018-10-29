@@ -83,6 +83,7 @@ router.post('/', async (ctx) => {
   const { body } = ctx.request;
   console.log(body);
   body.tags = body.tags.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
+  body.category = body.category.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
   const result = await Test.create(body);
   ctx.body = result;
 });
