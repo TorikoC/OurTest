@@ -1,16 +1,19 @@
 function f(stars) {
+  if (!stars) {
+    return;
+  }
   const table = [];
   const voteCnt = stars.length;
   let totalScore = 0;
   stars.forEach(obj => {
     totalScore += obj.count;
-    if (!table[6 - obj.count]) {
-      table[6 - obj.count] = 1;
+    if (!table[obj.count]) {
+      table[obj.count] = 1;
     } else {
-      table[6 - obj.count] += 1;
+      table[obj.count] += 1;
     }
   });
-  const score = totalScore / (5 * voteCnt) * 10;
+  const score = (totalScore / (5 * voteCnt) * 10).toFixed(2);
   const result = {
     score,
     voteCnt,

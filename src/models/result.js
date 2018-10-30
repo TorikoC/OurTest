@@ -18,6 +18,14 @@ const resultSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  timeLimit: {
+    type: Number,
+    default: 0,
+  },
+  timeUsed: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Number,
     default: 0,

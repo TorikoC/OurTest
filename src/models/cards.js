@@ -29,6 +29,17 @@ const cardSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  stars: {
+    type: Array,
+    default: [],
+  },
+  vote: {
+    type: Object,
+    default: {
+      disable: false,
+      count: 0,
+    }
+  },
   comments: {
     type: Array,
     default: [],

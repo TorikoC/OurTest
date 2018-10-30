@@ -61,7 +61,6 @@ router.get('/:title', jwt({
   const result = await Test.findOne(where).lean();
 
   result.rating = getRating(result.stars);
-  console.log(result.rating);
 
   result.stars.forEach((obj) => {
     if (obj.username === username) {
@@ -94,11 +93,12 @@ router.post('/', async (ctx) => {
 });
 
 router.put('/:title', async (ctx) => {
+  delete ctx.request.body.__v;
   const { body } = ctx.request;
   const { title } = ctx.params;
   const test = await Test.findOne({ title });
   Object.assign(test, body);
-  test.save();
+  await test.save();
   ctx.body = test;
 });
 
