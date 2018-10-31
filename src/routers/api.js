@@ -16,10 +16,7 @@ const router = new Router();
 router.prefix('api');
 router.use('/login', loginRouter.routes(), loginRouter.allowedMethods());
 
-router.use('/users', jwt({
-  secret: '42',
-  cookie: 'token',
-}), userRouter.routes(), userRouter.allowedMethods());
+router.use('/users', userRouter.routes(), userRouter.allowedMethods());
 
 router.use('/tests', testRouter.routes(), testRouter.allowedMethods());
 router.use('/sendmail', mailRouter.routes(), mailRouter.allowedMethods());
