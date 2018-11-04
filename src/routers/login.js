@@ -1,11 +1,12 @@
 const Router = require('koa-router');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const User = require('../models/user');
 const Result = require('../models/result');
-const Comment = require('../models/comment');
 
 const router = new Router();
+const secret = config.get('jwt-secret');
 
 router.post('/', async (ctx) => {
   const {
@@ -22,12 +23,11 @@ router.post('/', async (ctx) => {
     ctx.throw('user not exist.');
   } 
   const results = await Result.find({username: user.username});
-  const comments = await Comment.find({username: user.username});
   if (user && user.password === password) {
     user.activities.push(`
       login from ${ctx.request.ip}, ${new Date().toLocaleString()}
     `)
-    const token = await jwt.sign({ username: user.username, email: user.email }, '42');
+    const token = await jwt.sign({ username: user.username, email: user.email }, secret);
     ctx.body = {
       token,
       user: {

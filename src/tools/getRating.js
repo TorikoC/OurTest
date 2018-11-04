@@ -1,9 +1,15 @@
 function f(stars) {
-  if (!stars) {
-    return;
+  const result = {
+    score: 0.0,
+    voteCnt: 0,
+    list: [],
+  }
+  if (!stars || stars.length === 0) {
+    return result;
   }
   const table = [];
   const voteCnt = stars.length;
+  result.voteCnt = voteCnt;
   let totalScore = 0;
   stars.forEach(obj => {
     totalScore += obj.count;
@@ -14,11 +20,8 @@ function f(stars) {
     }
   });
   const score = (totalScore / (5 * voteCnt) * 10).toFixed(2);
-  const result = {
-    score,
-    voteCnt,
-    list: []
-  }
+  result.score = score;
+
   for(key in table) {
     result.list.push({
       star: key,

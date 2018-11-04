@@ -3,6 +3,9 @@ const Test = require('../models/test');
 const jwt = require('koa-jwt');
 const getRating = require('../tools/getRating');
 
+const config = require('config');
+const secret = config.get('jwt-secret');
+
 const router = new Router();
 
 router.get('/', async(ctx) => {
@@ -83,27 +86,30 @@ router.get('/:title', jwt({
   }
 });
 
-router.post('/', async (ctx) => {
+router.post('/', jwt({
+  secret,
+}), async (ctx) => {
   const { body } = ctx.request;
-  console.log(body);
   body.tags = body.tags.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
   body.category = body.category.split(',').filter(obj => obj.trim() !== '').map((obj) => obj.trim());
   const result = await Test.create(body);
   ctx.body = result;
 });
 
-router.put('/:title', async (ctx) => {
+router.put('/:title', jwt({
+  secret,
+}), async (ctx) => {
   delete ctx.request.body.__v;
   const { body } = ctx.request;
   const { title } = ctx.params;
   const test = await Test.findOne({ title });
   Object.assign(test, body);
-  await test.save();
+  test.save();
   ctx.body = test;
 });
 
 router.put('/stars/:title', jwt({
-  secret: '42',
+  secret
 }), async (ctx) => {
   const { count } = ctx.request.body;
   const { title } = ctx.params;
@@ -122,7 +128,7 @@ router.put('/stars/:title', jwt({
 })
 
 router.del('/:title', jwt({
-  secret: '42',
+  secret
 }), async (ctx) => {
   const { title } = ctx.params;
   const { username } = ctx.state.user;

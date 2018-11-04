@@ -5,12 +5,16 @@ const path = require('path');
 
 const router = new Router();
 
-router.get('/:id', async (ctx) => {
-  const { id } = ctx.params;
-  const option = {
-    _id: id,
-  };
-  const user = await User.findOne(option);
+const jwt = require('koa-jwt');
+const config = require('config');
+const secret = config.get('jwt-secret');
+
+router.get('/:username', async (ctx) => {
+  const { username } = ctx.params;
+  const where = {
+    username,
+  }
+  const user = await User.findOne(where);
   ctx.body = user;
 });
 
@@ -31,7 +35,9 @@ router.post('/', async (ctx) => {
   ctx.body = result;
 });
 
-router.put('/', async (ctx) => {
+router.put('/', jwt({
+  secret,
+}), async (ctx) => {
   const {
     username,
   } = ctx.state.user;
@@ -55,17 +61,17 @@ router.put('/', async (ctx) => {
       }
       return 'jpg';
     }
-    try {
-      fs.unlinkSync(path.join(__dirname, '..', 'static/avatar/', user.avatar.split('/').pop()));
-    } catch (err) {
-
-    }
+    const avatarOld = path.join(__dirname, '..', 'static/avatar/', user.avatar.split('/').pop());
     const rs = fs.createReadStream(avatar.path);
     const name = Date.now() + '.' + getType(avatar.type);
     const ws = fs.createWriteStream(path.join(__dirname, '..', 'static/avatar/', name));
+
     rs.pipe(ws);
     user.avatar = 'http://localhost:3001/avatar/' + name;
-    console.log('uploading %s -> %s', avatar.name, ws.path);
+    try {
+      fs.unlinkSync(avatarOld);
+    } catch (err) {
+    }
   } 
   if (email) {
     user.email = email;
@@ -75,16 +81,6 @@ router.put('/', async (ctx) => {
   }
   user.save();
   ctx.body = user;
-  // console.log(user);
-  // if (user) {
-  //   if (user.testHistories) {
-  //     user.testHistories.push(result);
-  //   } else {
-  //     user.testHistories = [result];
-  //   }
-  //   user.save();
-  //   ctx.body = 'ok';
-  // }
 });
 
 module.exports = router;

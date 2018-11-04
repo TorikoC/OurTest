@@ -2,6 +2,11 @@ const nodemailer = require('nodemailer');
 const Router = require('koa-router');
 const Test = require('../models/test');
 
+const jwt = require('koa-jwt');
+const config = require('config');
+
+const secret = config.get('jwt-secret');
+
 const router = new Router();
 
 const transporter = nodemailer.createTransport({
@@ -15,7 +20,9 @@ const transporter = nodemailer.createTransport({
 });
 
 
-router.post('/:title', async (ctx) => {
+router.post('/:title', jwt({
+  secret
+}), async (ctx) => {
   const { title } = ctx.params;
   const test = await Test.findOne({ title });
 

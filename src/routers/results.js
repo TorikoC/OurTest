@@ -3,6 +3,11 @@ const Result = require('../models/result');
 
 const router = new Router();
 
+const jwt = require('koa-jwt');
+const config = require('config');
+
+const secret = config.get('jwt-secret');
+
 router.get('/', async(ctx) => {
   let { 
     title,
@@ -43,7 +48,9 @@ router.get('/:id', async (ctx) => {
   ctx.body = result;
 })
 
-router.post('/', async (ctx) => {
+router.post('/', jwt({
+  secret
+}), async (ctx) => {
   const { body } = ctx.request;
   ctx.body = await Result.create(body);
 })
