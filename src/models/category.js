@@ -17,36 +17,33 @@ const Category = mongoose.model('Category', CategorySchema);
   await Category.remove({});
   const docs = [
     {
-      name: 'programming',
+      name: '计算机',
       children: [
         {
-          name: 'JavaScript',
+          name: '编程语言',
+          children: [
+            {
+              name: 'Java Script',
+              children: [],
+            }
+          ],
+        },
+        {
+          name: '计算机网络',
           children: [],
         }
       ],
     }, {
-      name: 'Math',
+      name: '外语',
       children: [
         {
-          name: 'linear algebar very long long tags',
-          children: [],
-        }
-      ],
-    }, {
-      name: 'language',
-      children: [
-        {
-          name: 'English',
+          name: '英语',
           children: [],
         },
         {
-          name: 'Japanese',
+          name: '日语',
           children: [],
         },
-        {
-          name: 'Chinese',
-          children: [],
-        }
       ]
     }
   ]

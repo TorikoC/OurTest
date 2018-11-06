@@ -50,7 +50,9 @@ router.get('/', async(ctx) => {
     delete where['settings.accessbility'];
   }
   const skip = (page - 1) * limit;
-  const results = await Test.find(where).skip(skip).limit(limit);
+  const results = await Test.find(where).skip(skip).limit(limit).sort({
+    createdAt: -1,
+  });
   const total = await Test.count(where);
   ctx.body = { results, total };
 })
@@ -71,6 +73,7 @@ router.get('/:title', jwt({
       result.vote.count = obj.count ;
     }
   })
+
   if (result.settings.accessbility) {
     try {
       if (!email || (result.settings.whitelist.indexOf(email) === -1 && result.author !== username)) {

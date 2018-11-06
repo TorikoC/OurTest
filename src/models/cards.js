@@ -43,6 +43,12 @@ const cardSchema = new mongoose.Schema({
   comments: {
     type: Array,
     default: [],
+  },
+  settings: {
+    type: Object,
+    default: {
+      accessbility: 0,
+    }
   }
 });
 

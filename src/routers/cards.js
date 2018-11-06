@@ -4,7 +4,9 @@ const User = require('../models/user');
 const jwt = require('koa-jwt');
 const getRating = require('../tools/getRating');
 
-const SECRET = '42';
+const config = require('config');
+
+const secret = config.get('jwt-secret');
 
 const router = new Router();
 
@@ -54,7 +56,9 @@ router.get('/', async (ctx) => {
   ctx.body = { results, total };
 })
 
-router.get('/:title', async (ctx) => {
+router.get('/:title', jwt({
+  secret,
+}), async (ctx) => {
   const {
     title
   } = ctx.params;
@@ -63,15 +67,22 @@ router.get('/:title', async (ctx) => {
     title,
   };
 
+  const { username } = ctx.state.user;
+
+
   const result = await Card.findOne(where).lean();
 
   result.rating = getRating(result.stars);
+
+  if (result.author === username) {
+    result.isAuthor = true;
+  }
 
   ctx.body = result;
 })
 
 router.post('/', jwt({
-  secret: SECRET,
+  secret,
 }), async (ctx) => {
   const {
     body
@@ -83,7 +94,7 @@ router.post('/', jwt({
 })
 
 router.put('/comments/:title', jwt({
-  secret: SECRET,
+  secret,
 }), async (ctx) => {
   delete ctx.request.body.__v;
 
@@ -107,7 +118,7 @@ router.put('/comments/:title', jwt({
 })
 
 router.put('/:title/stars', jwt({
-  secret: SECRET,
+  secret,
 }), async (ctx) => {
   const { count } = ctx.request.body;
   const { title } = ctx.params;
@@ -123,6 +134,38 @@ router.put('/:title/stars', jwt({
 
   card.save();
   ctx.body = card;
+})
+
+router.put('/:title/settings', jwt({
+  secret,
+}), async (ctx) => {
+  const { body } = ctx.request;
+  const { title } = ctx.params;
+  const { username } = ctx.state.user;
+
+  const card = await Card.findOne({ title });
+
+  if(card.author !== username) {
+    ctx.throw(400);
+  } else {
+    Object.assign(card, body);
+    card.save();
+    ctx.body = card;
+  }
+})
+
+router.del('/:title', jwt({
+  secret,
+}), async (ctx) => {
+  const { title } = ctx.params;
+  const { username } = ctx.state.user;
+
+  const card = await Card.findOne({ title });
+  if(card.author !== username) {
+    ctx.throw(400);
+  } else {
+    ctx.body = await Card.remove({title});
+  }
 })
 
 module.exports = router;
