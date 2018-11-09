@@ -1,5 +1,8 @@
 const Router = require('koa-router');
 const User = require('../models/user');
+const CardComment = require('../models/card-comment');
+const TestComment = require('../models/test-comment');
+const PostReply = require('../models/post-reply');
 const fs = require('fs');
 const path = require('path');
 
@@ -68,6 +71,33 @@ router.put('/', jwt({
 
     rs.pipe(ws);
     user.avatar = 'http://localhost:3001/avatar/' + name;
+    PostReply.updateMany({username}, {
+      $set: {
+        avatar: user.avatar
+      }
+    }, (err, raw) => {
+      if (err) {
+        ctx.throw(err)
+      }
+    })
+    CardComment.updateMany({username}, {
+      $set: {
+        avatar: user.avatar
+      }
+    }, (err, raw) => {
+      if (err) {
+        ctx.throw(err)
+      }
+    })
+    TestComment.updateMany({username}, {
+      $set: {
+        avatar: user.avatar
+      }
+    }, (err, raw) => {
+      if (err) {
+        ctx.throw(err)
+      }
+    })
     try {
       fs.unlinkSync(avatarOld);
     } catch (err) {
@@ -82,5 +112,7 @@ router.put('/', jwt({
   user.save();
   ctx.body = user;
 });
+
+
 
 module.exports = router;

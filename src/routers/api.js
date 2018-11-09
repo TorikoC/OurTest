@@ -7,7 +7,8 @@ const mailRouter = require('./mail');
 const resultRouter = require('./results');
 const tagsRouter = require('./tags');
 const categoryRouter = require('./category');
-const commentRouter = require('./comments');
+const requestRouter = require('./requests');
+const postsRouter = require('./posts');
 
 const router = new Router();
 
@@ -21,6 +22,7 @@ router.use('/sendmail', mailRouter.routes());
 router.use('/results', resultRouter.routes());
 router.use('/tags', tagsRouter.routes());
 router.use('/category', categoryRouter.routes());
-router.use('/comments', commentRouter.routes());
+router.use('/requests', requestRouter.routes());
+router.use('/posts', postsRouter.routes());
 
 module.exports = router;

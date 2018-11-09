@@ -23,13 +23,21 @@ const Category = mongoose.model('Category', CategorySchema);
           name: '编程语言',
           children: [
             {
-              name: 'Java Script',
+              name: 'JavaScript',
+              children: [],
+            },
+            {
+              name: 'Python',
               children: [],
             }
           ],
         },
         {
           name: '计算机网络',
+          children: [],
+        },
+        {
+          name: '数据结构和算法',
           children: [],
         }
       ],

@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const Test = require('../models/test');
+const TestComment = require('../models/test-comment');
 const jwt = require('koa-jwt');
 const getRating = require('../tools/getRating');
 
@@ -58,13 +59,15 @@ router.get('/', async(ctx) => {
 })
 
 router.get('/:title', jwt({
-  secret: '42',
+  secret,
 }), async (ctx) => {
   const { title } = ctx.params;
   const { email, username } = ctx.state.user;
   const where = { title };
   const result = await Test.findOne(where).lean();
+  const comments = await TestComment.find(where).lean();
 
+  result.comments = comments;
   result.rating = getRating(result.stars);
 
   result.stars.forEach((obj) => {
@@ -143,5 +146,39 @@ router.del('/:title', jwt({
     ctx.throw('Test not exist or user not authenticated.');
   }
 })
+
+router.get('/:title/comments', async (ctx) => {
+  let {
+    page,
+    limit,
+  } = ctx.request.query;
+
+  const { title } = ctx.params;
+
+  page = +page || 1;
+  limit = +limit || 20;
+
+  const where = {
+    title,
+  }
+
+  const skip = (page - 1) * limit;
+  const results = await TestComment.find(where).skip(skip).limit(limit);
+  const total = await TestComment.count(where);
+
+  ctx.body = { 
+    results,
+    total,
+  };
+})
+
+router.post('/:title/comments', jwt({
+  secret
+}), async (ctx) => {
+  const { body } = ctx.request;
+
+  ctx.body = await TestComment.create(body);
+})
+
 
 module.exports = router;

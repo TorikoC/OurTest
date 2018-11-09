@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const Card = require('../models/cards');
+const CardComment = require('../models/card-comment');
 const User = require('../models/user');
 const jwt = require('koa-jwt');
 const getRating = require('../tools/getRating');
@@ -71,6 +72,9 @@ router.get('/:title', jwt({
 
 
   const result = await Card.findOne(where).lean();
+  const comments = await CardComment.find(where).lean();
+
+  result.comments = comments;
 
   result.rating = getRating(result.stars);
 
@@ -167,5 +171,40 @@ router.del('/:title', jwt({
     ctx.body = await Card.remove({title});
   }
 })
+
+router.get('/:title/comments', async (ctx) => {
+  let {
+    page,
+    limit,
+  } = ctx.request.query;
+
+  const { title } = ctx.params;
+
+  page = +page || 1;
+  limit = +limit || 20;
+
+  const where = {
+    title,
+  }
+
+  const skip = (page - 1) * limit;
+  const results = await CardComment.find(where).skip(skip).limit(limit);
+  const total = await CardComment.count(where);
+
+  ctx.body = { 
+    results,
+    total,
+  };
+})
+
+router.post('/:title/comments', jwt({
+  secret,
+}), async (ctx) => {
+  const { body } = ctx.request;
+
+  ctx.body = await CardComment.create(body);
+})
+
+
 
 module.exports = router;

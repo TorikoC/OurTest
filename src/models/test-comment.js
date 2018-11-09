@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
+const testCommentSchema = new mongoose.Schema({
   title: {
     type: String,
   },
@@ -10,17 +10,18 @@ const commentSchema = new mongoose.Schema({
   content: {
     type: String,
   },
-  createdAt: {
-    type: Number,
-  },
   avatar: {
     type: String,
-  }
+  },
+  createdAt: {
+    type: Number,
+    default: Date.now(),
+  },
 });
 
 // TODO:
 // add unique index for title & username
 
-const Comment = mongoose.model('Comment', commentSchema);
+const TestComment = mongoose.model('TestComment', testCommentSchema);
 
-module.exports = Comment;
+module.exports = TestComment;
