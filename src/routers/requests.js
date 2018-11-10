@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const config = require('config');
 const Request = require('../models/request');
+const RequestComment = require('../models/request-comment');
 
 const jwt = require('koa-jwt');
 const secret = config.get('jwt-secret'); 
@@ -77,19 +78,11 @@ router.get('/:title', jwt({
   const { title } = ctx.params;
 
   const result = await Request.findOne({title}).lean();
+  const comments = await RequestComment.find({title}).lean();
+  console.log(comments);
+  result.comments = comments;
 
   ctx.body = result;
-})
-
-router.post('/:title/comments', jwt({
-  secret,
-}), async (ctx) => {
-  const { body } = ctx.request;
-  const { title } = ctx.params;
-  const result = await Request.findOne({title});
-  result.comments.push(body);
-  result.save();
-  ctx.body = '';
 })
 
 router.put('/:title/status', jwt({
@@ -105,6 +98,39 @@ router.put('/:title/status', jwt({
   }
   result.save();
   ctx.body = '';
+})
+
+router.get('/:title/comments', async (ctx) => {
+  let {
+    page,
+    limit,
+  } = ctx.request.query;
+
+  const { title } = ctx.params;
+
+  page = +page || 1;
+  limit = +limit || 20;
+
+  const where = {
+    title,
+  }
+
+  const skip = (page - 1) * limit;
+  const results = await RequestComment.find(where).skip(skip).limit(limit);
+  const total = await RequestComment.count(where);
+
+  ctx.body = { 
+    results,
+    total,
+  };
+})
+
+router.post('/:title/comments', jwt({
+  secret,
+}), async (ctx) => {
+  const { body } = ctx.request;
+
+  ctx.body = await RequestComment.create(body);
 })
 
 router.post('/', jwt({

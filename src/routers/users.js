@@ -70,7 +70,8 @@ router.put('/', jwt({
     const ws = fs.createWriteStream(path.join(__dirname, '..', 'static/avatar/', name));
 
     rs.pipe(ws);
-    user.avatar = 'http://localhost:3001/avatar/' + name;
+    // user.avatar = 'http://localhost:3001/avatar/' + name;
+    user.avatar = 'http://www.ourtest.us:3001/avatar/' + name;
     PostReply.updateMany({username}, {
       $set: {
         avatar: user.avatar
@@ -112,7 +113,5 @@ router.put('/', jwt({
   user.save();
   ctx.body = user;
 });
-
-
 
 module.exports = router;
