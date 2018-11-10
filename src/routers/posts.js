@@ -33,7 +33,7 @@ router.get('/', async (ctx) => {
     }
   }
 
-  const results = await Post.find(where).skip(skip).limit(limit);
+  const results = await Post.find(where).skip(skip).limit(limit).lean();
   const total = await Post.count(where);
 
   ctx.body = { 
@@ -85,6 +85,11 @@ router.post('/:title/replys', jwt({
   secret,
 }), async (ctx) => {
   const { body } = ctx.request;
+  const { title } = ctx.params;
+
+  const req = await Post.findOne({title});
+  req.replys += 1;
+  req.save();
 
   ctx.body = await PostReply.create(body);
 })

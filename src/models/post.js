@@ -14,6 +14,10 @@ const postSchema = new mongoose.Schema({
     type: Number,
     default: Date.now(),
   },
+  replys: {
+    type: Number,
+    default: 0,
+  }
 });
 
 const Post = mongoose.model('Post', postSchema);
